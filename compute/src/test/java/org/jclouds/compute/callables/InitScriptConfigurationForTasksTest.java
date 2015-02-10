@@ -16,10 +16,7 @@
  */
 package org.jclouds.compute.callables;
 
-import static java.lang.String.format;
 import static org.testng.Assert.assertEquals;
-
-import java.io.File;
 
 import org.testng.annotations.Test;
 
@@ -40,7 +37,7 @@ public class InitScriptConfigurationForTasksTest {
    public void testPatternUpdatesBasedir() {
       InitScriptConfigurationForTasks config = InitScriptConfigurationForTasks.create();
       config.initScriptPattern("/var/foo-init-%s");
-      assertEquals(config.getBasedir(), format("%svar", File.separator));
+      assertEquals(config.getBasedir(), "/var");
       assertEquals(config.getInitScriptPattern(), "/var/foo-init-%s");
    }
 
@@ -55,7 +52,7 @@ public class InitScriptConfigurationForTasksTest {
 
       }).getInstance(InitScriptConfigurationForTasks.class);
       config.initScriptPattern("/var/foo-init-%s");
-      assertEquals(config.getBasedir(), format("%svar", File.separator));
+      assertEquals(config.getBasedir(), "/var");
       assertEquals(config.getInitScriptPattern(), "/var/foo-init-%s");
    }
 
@@ -76,4 +73,19 @@ public class InitScriptConfigurationForTasksTest {
       assertEquals(config.getAnonymousTaskSuffixSupplier().get(), "1");
    }
 
+   @Test
+   public void testInitScriptPattern() throws Exception {
+      InitScriptConfigurationForTasks config = InitScriptConfigurationForTasks.create();
+      config.initScriptPattern("/var/tmp/jclouds-%s");
+      assertEquals(config.getBasedir(), "/var/tmp");
+      assertEquals(config.getInitScriptPattern(), "/var/tmp/jclouds-%s");
+   }
+
+   @Test
+   public void testInitScriptPatternAtRoot() throws Exception {
+      InitScriptConfigurationForTasks config = InitScriptConfigurationForTasks.create();
+      config.initScriptPattern("/jclouds-%s");
+      assertEquals(config.getBasedir(), "/");
+      assertEquals(config.getInitScriptPattern(), "/jclouds-%s");
+   }
 }
